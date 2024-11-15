@@ -19,6 +19,10 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = 'accounts.User'
+
+USER_MODEL_USERNAME_FIELD = "email"
+
 CORE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,14 +37,20 @@ CORE_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
+    'dj_rest_auth',
+
     'allauth',
     'allauth.account',
+    'dj_rest_auth.registration',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'dj_rest_auth.registration',
 ]
 
-INSTALLED_APPS = CORE_APPS + THIRD_PARTY_APPS
+BACKEND_APPS = [
+    'accounts',
+]
+
+INSTALLED_APPS = CORE_APPS + THIRD_PARTY_APPS + BACKEND_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,6 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'django.template.context_processors.request'
             ],
         },
     },
@@ -84,6 +96,13 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by user in admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # This one
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -121,13 +140,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-AUTH_USER_MODEL = 'accounts.models.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
@@ -139,6 +158,7 @@ GOOGLE_OAUTH_CALLBACK_URL = os.environ.get("GOOGLE_OAUTH_CALLBACK_URL")
 
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_STORE_TOKENS = True
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APPS": [
@@ -153,4 +173,21 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
     }
+}
+
+SITE_ID = 1
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
 }

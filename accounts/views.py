@@ -21,15 +21,16 @@ class GoogleLogin(SocialLoginView):
 
 
 class GoogleLoginCallback(APIView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         code = request.GET.get("code")
 
         if code is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         token_endpoint_url = urljoin(
-            "http://localhost:8000", reverse("google_login")
+            "http://localhost:8000", reverse("accounts:google_login")
         )
+
 
         response = requests.post(url=token_endpoint_url, data={"code": code})
 
@@ -37,7 +38,7 @@ class GoogleLoginCallback(APIView):
 
 
 class LoginPage(View):
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         return render(
             request,
             "pages/login.html",
