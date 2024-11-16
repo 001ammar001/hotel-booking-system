@@ -1,6 +1,7 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models_classes import (
+from .models import (
     Hotel
 )
 from .serializers import (
@@ -8,6 +9,6 @@ from .serializers import (
 )
 
 
-class GetHotelsApiView(ListAPIView):
+class GetHotelsApiView(ReadOnlyModelViewSet):
     serializer_class = HotelListSerializer
     queryset = Hotel.objects.defer("hotel_super_admin").all()
