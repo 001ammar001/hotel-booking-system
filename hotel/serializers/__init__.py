@@ -1,0 +1,1 @@
+from .hotel_list_serializer import HotelListSerializer
