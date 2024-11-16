@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -146,51 +145,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
-GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
-GOOGLE_OAUTH_CALLBACK_URL = os.environ.get("GOOGLE_OAUTH_CALLBACK_URL")
-
-SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
-SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-SOCIALACCOUNT_STORE_TOKENS = True
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APPS": [
-            {
-                "client_id": GOOGLE_OAUTH_CLIENT_ID,
-                "secret": GOOGLE_OAUTH_CLIENT_SECRET,
-                "key": "",
-            },
-        ],
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-    }
-}
-
-SITE_ID = 1
-
-REST_FRAMEWORK = {
-    'COERCE_DECIMAL_TO_STRING': False,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
-}
-
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
-REST_AUTH = {
-    'USE_JWT': True,
-}
