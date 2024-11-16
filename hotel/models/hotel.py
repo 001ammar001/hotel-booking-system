@@ -13,3 +13,6 @@ class Hotel(models.Model):
     hotel_super_admin = models.ForeignKey(
         User, related_name="owner", on_delete=models.PROTECT
     )
+
+    def __str__(self):
+        return self.name
