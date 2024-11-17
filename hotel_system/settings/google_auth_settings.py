@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "email"
 ACCOUNT_AUTHENTICATION_METHOD = "email"
@@ -32,6 +33,8 @@ SOCIALACCOUNT_PROVIDERS = {
 SITE_ID = 1
 
 SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(weeks=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
