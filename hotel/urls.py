@@ -8,10 +8,12 @@ router = SimpleRouter(
     use_regex_path=False
 )
 router.register("hotels", GetHotelsApiView)
+router.register(
+    "hotels/<int:hotel_pk>/images",
+    HotelImagesListCreateView,
+    basename="hotel-images"
+)
 
 urlpatterns = [
-    path(
-        "hotels/<int:hotel_pk>/images/",
-        HotelImagesListCreateView.as_view()
-    ),
+
 ] + router.urls

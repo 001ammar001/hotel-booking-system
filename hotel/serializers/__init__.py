@@ -1,3 +1,2 @@
 from .hotel_list_serializer import HotelListSerializer
 from .hotel_image_serializer import HotelImagesListSerializer
-from .hotel_image_ids_serializer import HotelImageIdsSerializer
