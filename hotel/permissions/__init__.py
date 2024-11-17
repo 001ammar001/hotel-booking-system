@@ -1,1 +1,2 @@
 from .hotel_owner_permission import HotelOwnerPermission
+from .hotel_staff_permission import HotelStaffPermisson

@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,OR
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from .permissions import HotelOwnerPermission
+from .permissions import (HotelOwnerPermission, Ho)
 
 from .models import (
     Hotel,
@@ -24,7 +24,7 @@ class GetHotelsApiView(ReadOnlyModelViewSet):
 
 
 class AddHotelImages(APIView):
-    permission_classes = [IsAuthenticated, HotelOwnerPermission]
+    permission_classes = [IsAuthenticated, OR(HotelOwnerPermission,)]
     allowed_methods = ["GET"]
 
     def get(self, request: Request, hotel_pk: int):
