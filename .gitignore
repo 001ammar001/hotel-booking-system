@@ -11,6 +11,7 @@ dist/
 google-services.json
 db.sqlite3
 *.pyc
+media/
 
 # Compiled Java class files
 *.class
