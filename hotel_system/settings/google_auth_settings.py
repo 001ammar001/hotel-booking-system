@@ -35,9 +35,10 @@ SITE_ID = 1
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(weeks=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 REST_AUTH = {
-    'USE_JWT': True,
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
 }
