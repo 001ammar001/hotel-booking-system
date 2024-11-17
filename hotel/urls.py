@@ -1,10 +1,17 @@
 from django.urls import path
 from rest_framework.routers import SimpleRouter
-from .views import (GetHotelsApiView, AddHotelImages)
+from .views import (
+    GetHotelsApiView, HotelImagesListCreateView
+)
 
-router = SimpleRouter()
+router = SimpleRouter(
+    use_regex_path=False
+)
 router.register("hotels", GetHotelsApiView)
 
 urlpatterns = [
-    path("hotels/<int:hotel_pk>/images", AddHotelImages.as_view())
+    path(
+        "hotels/<int:hotel_pk>/images/",
+        HotelImagesListCreateView.as_view()
+    ),
 ] + router.urls

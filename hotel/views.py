@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.permissions import IsAuthenticated, OR
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 
-from .serializers import (HotelListSerializer, HotelImagesListSerializer)
+from .serializers import (
+    HotelListSerializer, HotelImagesListSerializer, HotelImageIdsSerializer
+)
 from .permissions import (HotelOwnerPermission, HotelStaffPermisson)
 from .models import (Hotel, HotelImage)
 
@@ -16,11 +18,10 @@ class GetHotelsApiView(ReadOnlyModelViewSet):
     lookup_url_kwarg = "hotel_pk"
 
 
-class AddHotelImages(APIView):
-    allowed_methods = ["GET"]
+class HotelImagesListCreateView(APIView):
     permission_classes = [
         IsAuthenticated,
-        HotelOwnerPermission | HotelStaffPermisson
+        HotelStaffPermisson | HotelOwnerPermission
     ]
 
     def get(self, request: Request, hotel_pk: int):
@@ -44,3 +45,13 @@ class AddHotelImages(APIView):
         HotelImage.objects.bulk_create(images)
 
         return Response({"message": "images has been added sucsessfully"}, status=status.HTTP_201_CREATED)
+
+    def delete(self, request: Request, hotel_pk: int):
+        ids = request.POST.getlist("ids")
+        validated_ids = HotelImageIdsSerializer(
+            data={"ids": ids}, context={"hotel_pk": hotel_pk},
+        )
+        validated_ids.is_valid(raise_exception=True)
+        HotelImage.objects.filter(id__in=ids).delete()
+
+        return Response({"message": "image deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
