@@ -8,10 +8,15 @@ from django.views import View
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from dj_rest_auth.registration.views import SocialLoginView
+from dj_rest_auth.registration.views import SocialLoginView, RegisterView
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from .serializers import RegisterSerializer
+
+class EmailRegister(RegisterView):
+    serializer_class = RegisterSerializer
 
 
 class GoogleLogin(SocialLoginView):
@@ -30,7 +35,6 @@ class GoogleLoginCallback(APIView):
         token_endpoint_url = urljoin(
             "http://localhost:8000", reverse("accounts:google_login")
         )
-
 
         response = requests.post(url=token_endpoint_url, data={"code": code})
 
