@@ -3,7 +3,7 @@ from .hotel import Hotel
 
 
 def hotel_images_directory_path(instance: 'HotelImage', file_name: str) -> str:
-    return f"hotel_{instance.hotel.id}/{file_name}"
+    return f"hotel_images/hotel_{instance.hotel.id}/{file_name}"
 
 
 class HotelImage(models.Model):
