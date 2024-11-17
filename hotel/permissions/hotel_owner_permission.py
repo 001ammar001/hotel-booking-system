@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission
 from hotel.models import Hotel
 
 
-class HotelAdminPermission(BasePermission):
+class HotelOwnerPermission(BasePermission):
     def has_permission(self, request, view):
         hotel_id = view.kwargs.get("hotel_pk")
         try:
