@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import GoogleLogin, GoogleLoginCallback, LoginPage, EmailRegister
 
 app_name = "accounts"

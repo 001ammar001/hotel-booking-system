@@ -7,7 +7,7 @@ User = settings.AUTH_USER_MODEL
 
 class HotelStaff(models.Model):
     hotel = models.ForeignKey(
-        Hotel, related_name="hotel_adimns", on_delete=models.CASCADE
+        Hotel, related_name="hotel_admins", on_delete=models.CASCADE
     )
 
     user = models.ForeignKey(
