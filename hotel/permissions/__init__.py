@@ -1,0 +1,1 @@
+from .hotel_admin import HotelAdminPermission
