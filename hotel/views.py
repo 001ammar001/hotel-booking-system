@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import (
-    HotelListSerializer
+    HotelListSerializer,
+    AddNewStaffSerializer
 )
 from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
 from .models import (Hotel)
@@ -50,3 +51,12 @@ class HotelStaffsViewSet(ViewSet):
 
     def list(self, request: Request, hotel_pk: int):
         return HotelStaffService.get_hotel_staffs(hotel_id=hotel_pk)
+
+    def create(self, request: Request, hotel_pk: int):
+        serializer = AddNewStaffSerializer(
+            data=request.data,
+            context={"hotel_id": hotel_pk}
+        )
+        serializer.is_valid(raise_exception=True,)
+
+        return HotelStaffService.addNewStaff(user_id=serializer.data.get("user_id"), hotel_id=hotel_pk)
