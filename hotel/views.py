@@ -43,3 +43,10 @@ class HotelImagesListCreateView(ViewSet):
     def delete(self, request: Request, hotel_pk: int):
         ids = request.POST.getlist("ids")
         return HotelImageService.delete_images(ids, hotel_pk)
+
+
+class HotelStaffsViewSet(ViewSet):
+    permission_classes = [HotelOwnerPermission]
+
+    def list(self, request: Request, hotel_pk: int):
+        return HotelStaffService.get_hotel_staffs(hotel_id=hotel_pk)
