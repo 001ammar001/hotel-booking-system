@@ -1,3 +1,4 @@
+from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -20,7 +21,7 @@ class GetHotelsApiView(ReadOnlyModelViewSet):
     lookup_url_kwarg = "hotel_pk"
 
 
-class HotelImagesListCreateView(ViewSet):
+class HotelImagesViewSet(ViewSet):
     def get_permissions(self):
         permissions = [IsAuthenticated]
         if self.action != "list":
@@ -46,13 +47,13 @@ class HotelImagesListCreateView(ViewSet):
         return HotelImageService.delete_images(ids, hotel_pk)
 
 
-class HotelStaffsViewSet(ViewSet):
+class HotelStaffsViewSet(APIView):
     permission_classes = [HotelOwnerPermission]
 
-    def list(self, request: Request, hotel_pk: int):
+    def get(self, request: Request, hotel_pk: int):
         return HotelStaffService.get_hotel_staffs(hotel_id=hotel_pk)
 
-    def create(self, request: Request, hotel_pk: int):
+    def post(self, request: Request, hotel_pk: int):
         serializer = AddNewStaffSerializer(
             data=request.data,
             context={"hotel_id": hotel_pk}
@@ -60,3 +61,10 @@ class HotelStaffsViewSet(ViewSet):
         serializer.is_valid(raise_exception=True,)
 
         return HotelStaffService.addNewStaff(user_id=serializer.data.get("user_id"), hotel_id=hotel_pk)
+
+
+class HotelStaffsDeleteView(APIView):
+    permission_classes = [HotelOwnerPermission]
+
+    def delete(self, request: Request, hotel_pk: int, staff_pk: int):
+        return HotelStaffService.removeStaff(hotel_id=hotel_pk, staff_id=staff_pk)
