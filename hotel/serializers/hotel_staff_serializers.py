@@ -18,13 +18,13 @@ class AddNewStaffSerializer(serializers.Serializer):
 
     def validate_user_id(self, user_id: int):
         if HotelStaff.objects.filter(user_id=user_id, hotel_id=self.context["hotel_id"]).exists():
-            raise serializers.ValidationError({
-                "message": "this user is already a staff for this hotel"
-            })
+            raise serializers.ValidationError(
+                "this user is already a staff for this hotel"
+            )
 
         if Hotel.objects.filter(hotel_super_admin=user_id).exists():
-            raise serializers.ValidationError({
-                "message": "this user is already a staff for this hotel"
-            })
+            raise serializers.ValidationError(
+                "this user is already a staff for this hotel"
+            )
 
         return user_id
