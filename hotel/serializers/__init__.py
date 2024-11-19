@@ -5,3 +5,5 @@ from .hotel_staff_serializers import (
     HotelStaffListSerializer,
     AddNewStaffSerializer
 )
+
+from .hotel_room_type_serializers import HotelRoomTypeSerializer

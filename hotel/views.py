@@ -1,18 +1,19 @@
 from rest_framework.views import APIView
-from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 
+from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
+from .models import (Hotel, HotelRoomType)
+from .services import *
+
 from .serializers import (
     HotelListSerializer,
-    AddNewStaffSerializer
+    AddNewStaffSerializer,
+    HotelRoomTypeSerializer
 )
-from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
-from .models import (Hotel)
-
-from .services import *
 
 
 class GetHotelsApiView(ReadOnlyModelViewSet):
@@ -68,3 +69,14 @@ class HotelStaffsDeleteView(APIView):
 
     def delete(self, request: Request, hotel_pk: int, staff_pk: int):
         return HotelStaffService.removeStaff(hotel_id=hotel_pk, staff_id=staff_pk)
+
+
+class HotelRoomTypesViewSet(ModelViewSet):
+    permission_classes = [HotelOwnerPermission | HotelOwnerPermission]
+    serializer_class = HotelRoomTypeSerializer
+
+    def get_queryset(self):
+        return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
+
+    def get_serializer_context(self):
+        return {"hotel_pk": self.kwargs["hotel_pk"]}
