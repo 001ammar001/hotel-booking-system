@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from .hotel_room_type import Hotel
+from .hotel import Hotel
 
 
 class HotelRoomGadget(models.Model):
