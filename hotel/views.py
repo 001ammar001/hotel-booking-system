@@ -13,7 +13,8 @@ from .serializers import (
     HotelListSerializer,
     AddNewStaffSerializer,
     HotelRoomTypeSerializer,
-    HotelRoomGadgetSerializer
+    HotelRoomGadgetSerializer,
+    HotelRoomTypeDetailSerializer
 )
 
 
@@ -74,10 +75,19 @@ class HotelStaffsDeleteView(APIView):
 
 class HotelRoomTypesViewSet(ModelViewSet):
     permission_classes = [HotelOwnerPermission | HotelOwnerPermission]
-    serializer_class = HotelRoomTypeSerializer
+    
 
     def get_queryset(self):
+        if (self.action == "retrive"):
+            return HotelRoomType.objects.prefetch_related("gadgets")\
+                .filter(hotel_id=self.kwargs["hotel_pk"])
+        
         return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
+    
+    def get_serializer_class(self):
+        if (self.action == "retrive"):
+            return HotelRoomTypeDetailSerializer
+        return HotelRoomTypeSerializer
 
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
@@ -89,6 +99,6 @@ class HotelRoomGadgetsViewSet(ModelViewSet):
 
     def get_queryset(self):
         return HotelRoomGadget.objects.filter(hotel_id=self.kwargs["hotel_pk"])
-    
+
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
