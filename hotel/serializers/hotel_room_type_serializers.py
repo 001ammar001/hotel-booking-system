@@ -18,4 +18,4 @@ class HotelRoomTypeSerializer(serializers.ModelSerializer):
         return name
 
     def save(self, **kwargs):
-        return super().save(**{"hotel_id": self.context.get("hotel_pk")})
+        return super().save(hotel_id=self.context.get("hotel_pk"))
