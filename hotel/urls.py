@@ -6,6 +6,7 @@ from .views import (
     HotelStaffsViewSet,
     HotelStaffsDeleteView,
     HotelRoomTypesViewSet,
+    HotelRoomGadgetsViewSet,
 )
 
 router = SimpleRouter(
@@ -24,8 +25,16 @@ router.register(
     basename="hotel-room-types"
 )
 
+router.register(
+    "hotels/<int:hotel_pk>/room-gadgets",
+    HotelRoomGadgetsViewSet,
+    basename="hotel-room-gadgets"
+)
+
 urlpatterns = [
-    path("hotels/<int:hotel_pk>/staffs/", HotelStaffsViewSet.as_view(),),
+    path("hotels/<int:hotel_pk>/staffs/",
+         HotelStaffsViewSet.as_view(),
+         ),
     path(
         "hotels/<int:hotel_pk>/staffs/<int:staff_pk>/",
         HotelStaffsDeleteView.as_view()

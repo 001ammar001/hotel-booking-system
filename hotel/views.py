@@ -6,13 +6,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
-from .models import (Hotel, HotelRoomType)
+from .models import (Hotel, HotelRoomType, HotelRoomGadget)
 from .services import *
 
 from .serializers import (
     HotelListSerializer,
     AddNewStaffSerializer,
-    HotelRoomTypeSerializer
+    HotelRoomTypeSerializer,
+    HotelRoomGadgetSerializer
 )
 
 
@@ -78,5 +79,16 @@ class HotelRoomTypesViewSet(ModelViewSet):
     def get_queryset(self):
         return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
 
+    def get_serializer_context(self):
+        return {"hotel_pk": self.kwargs["hotel_pk"]}
+
+
+class HotelRoomGadgetsViewSet(ModelViewSet):
+    permission_classes = [HotelOwnerPermission | HotelOwnerPermission]
+    serializer_class = HotelRoomGadgetSerializer
+
+    def get_queryset(self):
+        return HotelRoomGadget.objects.filter(hotel_id=self.kwargs["hotel_pk"])
+    
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
