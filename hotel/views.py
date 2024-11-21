@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
-from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet, ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, decorators
 
 from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
 from .models import (Hotel, HotelRoomType, HotelRoomGadget)
@@ -14,7 +14,8 @@ from .serializers import (
     AddNewStaffSerializer,
     HotelRoomTypeSerializer,
     HotelRoomGadgetSerializer,
-    HotelRoomTypeDetailSerializer
+    HotelRoomTypeDetailSerializer,
+    AddRemoveRoomTypeGadgetsSerializer
 )
 
 
@@ -24,18 +25,18 @@ class GetHotelsApiView(ReadOnlyModelViewSet):
     lookup_url_kwarg = "hotel_pk"
 
 
-class HotelImagesViewSet(ViewSet):
+class HotelImagesViewSet(APIView):
     def get_permissions(self):
         permissions = [IsAuthenticated]
-        if self.action != "list":
+        if self.request.method != "get":
             permissions.append(HotelStaffPermissoin | HotelOwnerPermission)
 
         return [permission() for permission in permissions]
 
-    def list(self, request: Request, hotel_pk: int):
+    def get(self, request: Request, hotel_pk: int):
         return HotelImageService.get_hotelImages(hotel_id=hotel_pk)
 
-    def create(self, request: Request, hotel_pk: int):
+    def post(self, request: Request, hotel_pk: int):
         files = request.FILES.getlist("images")
         if not files:
             return Response(
@@ -75,22 +76,37 @@ class HotelStaffsDeleteView(APIView):
 
 class HotelRoomTypesViewSet(ModelViewSet):
     permission_classes = [HotelOwnerPermission | HotelOwnerPermission]
-    
+    lookup_url_kwarg = "type_pk"
 
     def get_queryset(self):
-        if (self.action == "retrive"):
-            return HotelRoomType.objects.prefetch_related("gadgets")\
-                .filter(hotel_id=self.kwargs["hotel_pk"])
-        
+        if (self.action == "retrieve"):
+            return HotelRoomType.objects.\
+                filter(hotel_id=self.kwargs["hotel_pk"])\
+                .prefetch_related("gadgets")
+
         return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
-    
+
     def get_serializer_class(self):
-        if (self.action == "retrive"):
+        if (self.action == "retrieve"):
             return HotelRoomTypeDetailSerializer
+        if (self.action == "gadgets"):
+            return AddRemoveRoomTypeGadgetsSerializer
         return HotelRoomTypeSerializer
 
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
+
+    def check_object_permissions(self, request, obj):
+        return True
+
+    @decorators.action(methods=["post", "delete"], detail=True, url_name="gadgets", url_path="gadgets")
+    def gadgets(self, request: Request, hotel_pk: int, type_pk: int):
+        return HotelRoomTypeService.add_or_remove_gadgets(
+            gadgets=request.data.get("gadgets"),
+            hotel_pk=hotel_pk,
+            type_pk=type_pk,
+            is_add=self.request.method == "POST"
+        )
 
 
 class HotelRoomGadgetsViewSet(ModelViewSet):
