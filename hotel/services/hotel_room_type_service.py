@@ -15,9 +15,9 @@ class HotelRoomTypeService:
         )
         serializer.is_valid(raise_exception=True)
         validated_gadgets = serializer.validated_data.get("gadgets")
-        
+
         hotel_type = get_object_or_404(
-            HotelRoomType, id=type_pk, hotel_pk=hotel_pk
+            HotelRoomType, id=type_pk, hotel_id=hotel_pk
         )
 
         if is_add:
