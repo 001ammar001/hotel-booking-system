@@ -88,7 +88,7 @@ class HotelRoomTypesViewSet(ModelViewSet):
         if (self.action == "retrieve"):
             return HotelRoomType.objects.\
                 filter(hotel_id=self.kwargs["hotel_pk"])\
-                .prefetch_related("gadgets")
+                .prefetch_related("gadgets","images")
 
         return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
 

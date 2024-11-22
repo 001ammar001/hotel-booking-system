@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from hotel.models import HotelRoomType
 from .hotel_room_gadgets_serializers import HotelRoomGadgetSerializer
+from .hotel_room_type_images_serializer import HotelRoomTypeImagesListSerializer
 
 
 class HotelRoomTypeSerializer(serializers.ModelSerializer):
@@ -25,8 +26,10 @@ class HotelRoomTypeSerializer(serializers.ModelSerializer):
 
 class HotelRoomTypeDetailSerializer(serializers.ModelSerializer):
     gadgets = HotelRoomGadgetSerializer(many=True)
+    images = HotelRoomTypeImagesListSerializer(many=True)
 
     class Meta:
         model = HotelRoomType
         fields = ['id', 'name', 'number_of_guests',
-                  'description', 'base_price', 'gadgets']
+                  'description', 'base_price', 'gadgets', "images"
+                  ]
