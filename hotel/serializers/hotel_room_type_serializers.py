@@ -6,7 +6,7 @@ from .hotel_room_gadgets_serializers import HotelRoomGadgetSerializer
 class HotelRoomTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelRoomType
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'description', 'base_price']
 
     def validate_name(self, name):
         if HotelRoomType.objects \
@@ -24,6 +24,7 @@ class HotelRoomTypeSerializer(serializers.ModelSerializer):
 
 class HotelRoomTypeDetailSerializer(serializers.ModelSerializer):
     gadgets = HotelRoomGadgetSerializer(many=True)
+
     class Meta:
         model = HotelRoomType
-        fields = ['id', 'name','gadgets']
+        fields = ['id', 'name', 'description', 'base_price', 'gadgets']
