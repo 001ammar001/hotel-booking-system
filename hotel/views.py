@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.request import Request
@@ -108,6 +110,34 @@ class HotelRoomTypesViewSet(ModelViewSet):
             type_pk=type_pk,
             is_add=self.request.method == "POST"
         )
+
+    @decorators.action(methods=["get", "post", "delete"], detail=True, url_name="images", url_path="images")
+    def images(self, request: Request, hotel_pk, type_pk: int):
+        get_object_or_404(
+            HotelRoomType, id=type_pk, hotel_id=hotel_pk
+        )
+        
+        if self.request.method == "GET":
+            return TypeImagesService.get_typeImages(hotel_pk, type_id=type_pk)
+
+        if self.request.method == "POST":
+            files = request.FILES.getlist("images")
+            if not files:
+                return Response(
+                    {"message": "you should provide at lease one image"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            return TypeImagesService.add_images(type_pk, files)
+
+        if self.request.method == "DELETE":
+            ids = request.POST.getlist("ids")
+            if not ids:
+                return Response(
+                    {"message": "you should provide at lease one image"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            return TypeImagesService.delete_images(ids, type_pk)
 
 
 class HotelRoomGadgetsViewSet(ModelViewSet):

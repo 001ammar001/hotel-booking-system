@@ -13,3 +13,5 @@ from .hotel_room_gadgets_serializers import (
     HotelRoomGadgetSerializer,
     AddRemoveRoomTypeGadgetsSerializer
 )
+
+from .hotel_room_type_images_serializer import HotelRoomTypeImagesListSerializer

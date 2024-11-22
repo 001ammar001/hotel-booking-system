@@ -35,6 +35,6 @@ urlpatterns = [
          ),
     path(
         "hotels/<int:hotel_pk>/staffs/<int:staff_pk>/",
-        HotelStaffsDeleteView.as_view()
-    )
+        HotelStaffsDeleteView.as_view(),
+    ),
 ] + router.urls
