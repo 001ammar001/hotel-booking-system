@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status, decorators
@@ -27,8 +26,8 @@ class GetHotelsApiView(ReadOnlyModelViewSet):
 
 class HotelImagesViewSet(APIView):
     def get_permissions(self):
-        permissions = [IsAuthenticated]
-        if self.request.method != "get":
+        permissions = []
+        if self.request.method != "GET":
             permissions.append(HotelStaffPermissoin | HotelOwnerPermission)
 
         return [permission() for permission in permissions]
@@ -75,8 +74,13 @@ class HotelStaffsDeleteView(APIView):
 
 
 class HotelRoomTypesViewSet(ModelViewSet):
-    permission_classes = [HotelOwnerPermission | HotelOwnerPermission]
     lookup_url_kwarg = "type_pk"
+
+    def get_permissions(self):
+        permissions = []
+        if self.request.method != "GET":
+            permissions.append(HotelStaffPermissoin | HotelOwnerPermission)
+        return [permission() for permission in permissions]
 
     def get_queryset(self):
         if (self.action == "retrieve"):
@@ -95,9 +99,6 @@ class HotelRoomTypesViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
-
-    def check_object_permissions(self, request, obj):
-        return True
 
     @decorators.action(methods=["post", "delete"], detail=True, url_name="gadgets", url_path="gadgets")
     def gadgets(self, request: Request, hotel_pk: int, type_pk: int):
