@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from coustom.serializers.stop_on_first_error_list_serializer import StopOnFirstErrorListSerializer
+from shared.serializers.stop_on_first_error_list_serializer import StopOnFirstErrorListSerializer
 from hotel.models import HotelRoomGadget
 
 
