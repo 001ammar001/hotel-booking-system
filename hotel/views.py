@@ -16,7 +16,7 @@ from .serializers import (
     HotelRoomTypeSerializer,
     HotelRoomGadgetSerializer,
     HotelRoomTypeDetailSerializer,
-    AddRemoveRoomTypeGadgetsSerializer
+    AddRemoveRoomTypeGadgetsSerializer,
 )
 
 
@@ -88,7 +88,7 @@ class HotelRoomTypesViewSet(ModelViewSet):
         if (self.action == "retrieve"):
             return HotelRoomType.objects.\
                 filter(hotel_id=self.kwargs["hotel_pk"])\
-                .prefetch_related("gadgets","images")
+                .prefetch_related("gadgets", "images")
 
         return HotelRoomType.objects.filter(hotel_id=self.kwargs["hotel_pk"])
 
@@ -116,7 +116,7 @@ class HotelRoomTypesViewSet(ModelViewSet):
         get_object_or_404(
             HotelRoomType, id=type_pk, hotel_id=hotel_pk
         )
-        
+
         if self.request.method == "GET":
             return TypeImagesService.get_typeImages(hotel_pk, type_id=type_pk)
 
@@ -149,3 +149,10 @@ class HotelRoomGadgetsViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"hotel_pk": self.kwargs["hotel_pk"]}
+
+
+class HotelRoomsViewSet(APIView):
+    def post(self, request: Request, hotel_pk: int, type_pk: int):
+        get_object_or_404(HotelRoomType,hotel_id=hotel_pk,id=type_pk)
+        return HotelRoomService.add_rooms(hotel_pk, type_pk, request.data)
+
