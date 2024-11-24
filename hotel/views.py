@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status, decorators
+from rest_framework import status, decorators, permissions
 
 from .permissions import (HotelOwnerPermission, HotelStaffPermissoin)
 from .models import (Hotel, HotelRoomType, HotelRoomGadget)
@@ -153,6 +153,25 @@ class HotelRoomGadgetsViewSet(ModelViewSet):
 
 class HotelRoomsViewSet(APIView):
     def post(self, request: Request, hotel_pk: int, type_pk: int):
-        get_object_or_404(HotelRoomType,hotel_id=hotel_pk,id=type_pk)
+        get_object_or_404(HotelRoomType, hotel_id=hotel_pk, id=type_pk)
         return HotelRoomService.add_rooms(hotel_pk, type_pk, request.data)
 
+
+class HotelBookingsViewSet(APIView):
+
+    def get_permissions(self):
+        permission_classes = [permissions.IsAuthenticated]
+        if self.request.method == "GET":
+            permission_classes.append(HotelStaffPermissoin | HotelOwnerPermission)
+
+        return [permission() for permission in permission_classes]
+
+    def post(self, request: Request, hotel_pk: int, type_pk: int):
+        get_object_or_404(HotelRoomType, hotel_id=hotel_pk, id=type_pk)
+        return HotelBookingService.add_booking(
+            request.data, type_pk=type_pk, user=request.user
+        )
+
+    def get(self, request: Request, hotel_pk: int, type_pk: int):
+        get_object_or_404(HotelRoomType, hotel_id=hotel_pk, id=type_pk)
+        return HotelBookingService.get_hotel_type_bookings(type_pk=type_pk)
