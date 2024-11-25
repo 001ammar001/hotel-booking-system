@@ -16,4 +16,5 @@ from .hotel_room_gadgets_serializers import (
 
 from .hotel_room_type_images_serializer import HotelRoomTypeImagesListSerializer
 from .hotel_room_serializer import HotelRoomSerializer
-from .hotel_booking_serializers import RoomBookingSerializer
+from .hotel_booking_serializers import RoomBookingSerializer, AddRoomBookingSerializer
+from .hotel_booked_gadget_serializer import HotelBookedGadgetSerializer

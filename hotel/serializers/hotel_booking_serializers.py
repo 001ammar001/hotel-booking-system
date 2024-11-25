@@ -1,17 +1,34 @@
 from rest_framework import serializers
 from hotel.models import HotelBooking
+from .hotel_booked_gadget_serializer import HotelBookedGadgetSerializer
+from shared.serializers.stop_on_first_error_list_serializer import StopOnFirstErrorListSerializer
 
 
 class RoomBookingSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    room = serializers.PrimaryKeyRelatedField(read_only=True)
-    base_price = serializers.DecimalField(
-        decimal_places=2, max_digits=10, read_only=True
+    booked_gadgets = HotelBookedGadgetSerializer(many=True)
+    
+    class Meta:
+        model = HotelBooking
+        fields = '__all__'
+
+class AddRoomBookingSerializer(serializers.ModelSerializer):
+    gadgets = StopOnFirstErrorListSerializer(
+        child=serializers.IntegerField(), write_only=True
     )
 
     class Meta:
         model = HotelBooking
-        fields = '__all__'
+        fields = [
+            "start_date",
+            "end_date",
+            "gadgets"
+        ]
+
+    def validate_gadets(self,gadgets):
+        if len(gadgets) != len(set(gadgets)):
+            raise serializers.ValidationError(
+                "gadgets should be unique for each booking"
+            )
 
     def validate(self, attrs):
         start_date = attrs.get("start_date")
